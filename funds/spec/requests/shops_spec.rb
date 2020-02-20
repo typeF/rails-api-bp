@@ -52,7 +52,7 @@ RSpec.describe 'Shops API', type: :request do
   # Test suite for POST /shops
   describe 'POST /shops' do
     # valid payload
-    let(:valid_attributes) { { title: 'Learn Elm', location: 'Vancouver' } }
+    let(:valid_attributes) { { title: 'Learn Elm', location: 'Vancouver', created_by: '1' } }
 
     context 'when the request is valid' do
       before { post '/shops', params: valid_attributes }

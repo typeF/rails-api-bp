@@ -34,7 +34,7 @@ class ShopsController < ApplicationController
 
   def shop_params
     # whitelist params
-    params.permit(:title, :location)
+    params.permit(:title, :location, :created_by)
   end
 
   def set_shop
