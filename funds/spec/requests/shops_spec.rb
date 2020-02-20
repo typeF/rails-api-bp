@@ -23,7 +23,7 @@ RSpec.describe 'Shops API', type: :request do
 
   # Test suite for GET /shops/:id
   describe 'GET /shops/:id' do
-    before { get "/toshops/#{shop_id}" }
+    before { get "/shops/#{shop_id}" }
 
     context 'when the record exists' do
       it 'returns the shop' do

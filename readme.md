@@ -1,4 +1,4 @@
-_Setup based on tutorial from https://semaphoreci.com/community/tutorials/dockerizing-a-ruby-on-rails-application_
+_Setup credit due to tutorial from https://semaphoreci.com/community/tutorials/dockerizing-a-ruby-on-rails-application_
 
 ## Build rails-toolbox from Dockerfile.rails
 
@@ -48,6 +48,13 @@ $ docker­-compose run --­­user "$(id ­-u):$(id -­g)" funds rake db:reset
 $ docker­-compose run --­­user "$(id ­-u):$(id -­g)" funds rake db:migrate
 ```
 
+## Install Rspec
+
+```
+rails generate rspec:install
+docker­-compose run funds rails generate rspec:install
+```
+
 ## Running the application
 
 ```
@@ -55,3 +62,5 @@ docker-compose up
 ```
 
 Access on localhost:8020 to verify everything is running correctly.
+
+Testing setup based on tutorial on https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-one
