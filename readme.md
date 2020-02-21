@@ -2,13 +2,6 @@ _Setup credit due to tutorial from https://semaphoreci.com/community/tutorials/d
 
 ## Build rails-toolbox from Dockerfile.rails
 
-```
-docker build -t rails-toolbox \
-       --build-arg USER_ID=$(id -u)  \
-       --build-arg GROUP_ID=$(id -g) \
-       -f Dockerfile.rails .
-```
-
 _For OSX substitute GROUP_ID of 1000_
 
 ```
@@ -63,4 +56,4 @@ docker-compose up
 
 Access on localhost:8020 to verify everything is running correctly.
 
-Testing setup based on tutorial on https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-one
+Testing and JWT setup based on tutorial from https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-one
