@@ -2,13 +2,15 @@ require 'rails_helper'
 
 RSpec.describe 'Shops API', type: :request do
   # initialize test data 
-  let!(:shops) { create_list(:shop, 10) }
+  let(:user) { create(:user) }
+  let!(:shops) { create_list(:shop, 10, created_by: user.id) }
   let(:shop_id) { shops.first.id }
+  let(:headers) { valid_headers }
 
   # Test suite for GET /todos
   describe 'GET /shops' do
     # make HTTP get request before each example
-    before { get '/shops' }
+    before { get '/shops', params: {}, headers: headers }
 
     it 'returns shops' do
       # Note `json` is a custom helper to parse JSON responses
@@ -23,7 +25,7 @@ RSpec.describe 'Shops API', type: :request do
 
   # Test suite for GET /shops/:id
   describe 'GET /shops/:id' do
-    before { get "/shops/#{shop_id}" }
+    before { get "/shops/#{shop_id}", params: {}, headers: headers }
 
     context 'when the record exists' do
       it 'returns the shop' do
@@ -52,10 +54,12 @@ RSpec.describe 'Shops API', type: :request do
   # Test suite for POST /shops
   describe 'POST /shops' do
     # valid payload
-    let(:valid_attributes) { { title: 'Learn Elm', location: 'Vancouver', created_by: '1' } }
+    let(:valid_attributes) do
+      { title: 'Learn Elm', location: 'Vancouver', created_by: user.id.to_s }.to_json
+    end 
 
     context 'when the request is valid' do
-      before { post '/shops', params: valid_attributes }
+      before { post '/shops', params: valid_attributes, headers: headers }
 
       it 'creates a shop' do
         expect(json['title']).to eq('Learn Elm')
@@ -67,25 +71,26 @@ RSpec.describe 'Shops API', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/shops', params: { title: 'Foobar' } }
+      let(:invalid_attributes) { { title: nil }.to_json }
+      before { post '/shops', params: invalid_attributes, headers: headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
       end
 
       it 'returns a validation failure message' do
-        expect(response.body)
-          .to match(/Validation failed: Location can't be blank/)
+        expect(json['message'])
+          .to match(/Validation failed: Title can't be blank/)
       end
     end
   end
 
   # Test suite for PUT /shops/:id
   describe 'PUT /shops/:id' do
-    let(:valid_attributes) { { title: 'Fake shop' } }
+    let(:valid_attributes) { { title: 'Fake shop' }.to_json }
 
     context 'when the record exists' do
-      before { put "/shops/#{shop_id}", params: valid_attributes }
+      before { put "/shops/#{shop_id}", params: valid_attributes, headers: headers }
 
       it 'updates the record' do
         expect(response.body).to be_empty
@@ -99,7 +104,7 @@ RSpec.describe 'Shops API', type: :request do
 
   # Test suite for DELETE /shops/:id
   describe 'DELETE /shops/:id' do
-    before { delete "/shops/#{shop_id}" }
+    before { delete "/shops/#{shop_id}", params: {}, headers: headers }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)

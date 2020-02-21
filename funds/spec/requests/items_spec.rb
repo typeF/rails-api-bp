@@ -2,14 +2,16 @@ require 'rails_helper'
 
 RSpec.describe 'Items API' do
   # Initialize the test data
-  let!(:shop) { create(:shop) }
+  let(:user) { create(:user) }
+  let!(:shop) { create(:shop, created_by: user.id) }
   let!(:items) { create_list(:item, 20, shop_id: shop.id) }
   let(:shop_id) { shop.id }
   let(:id) { items.first.id }
+  let(:headers) { valid_headers }
 
   # Test suite for GET /shops/:shop_id/items
   describe 'GET /shops/:shop_id/items' do
-    before { get "/shops/#{shop_id}/items" }
+    before { get "/shops/#{shop_id}/items", params: {}, headers: headers }
 
     context 'when shop exists' do
       it 'returns status code 200' do
@@ -36,7 +38,7 @@ RSpec.describe 'Items API' do
 
   # Test suite for GET /shops/:shop_id/items/:id
   describe 'GET /shops/:shop_id/items/:id' do
-    before { get "/shops/#{shop_id}/items/#{id}" }
+    before { get "/shops/#{shop_id}/items/#{id}", params: {}, headers: headers }
 
     context 'when shop item exists' do
       it 'returns status code 200' do
@@ -63,10 +65,13 @@ RSpec.describe 'Items API' do
 
   # Test suite for POST /shops/:shop_id/items
   describe 'POST /shops/:shop_id/items' do
-    let(:valid_attributes) { { name: 'Cool Sword'} }
+    let(:valid_attributes) { { name: 'Cool Sword'}.to_json }
 
     context 'when request attributes are valid' do
-      before { post "/shops/#{shop_id}/items", params: valid_attributes }
+      before do
+        post "/shops/#{shop_id}/items", params: valid_attributes, headers: headers
+      end
+      
 
       it 'returns status code 201' do
         expect(response).to have_http_status(201)
@@ -74,7 +79,7 @@ RSpec.describe 'Items API' do
     end
 
     context 'when an invalid request' do
-      before { post "/shops/#{shop_id}/items", params: {} }
+      before { post "/shops/#{shop_id}/items", params: {}, headers: headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -88,9 +93,11 @@ RSpec.describe 'Items API' do
 
   # Test suite for PUT /shops/:shop_id/items/:id
   describe 'PUT /shops/:shop_id/items/:id' do
-    let(:valid_attributes) { { name: 'Lightsaber' } }
+    let(:valid_attributes) { { name: 'Lightsaber' }.to_json }
 
-    before { put "/shops/#{shop_id}/items/#{id}", params: valid_attributes }
+    before do
+      put "/shops/#{shop_id}/items/#{id}", params: valid_attributes, headers: headers
+    end
 
     context 'when item exists' do
       it 'returns status code 204' do
@@ -118,7 +125,7 @@ RSpec.describe 'Items API' do
 
   # Test suite for DELETE /shops/:id
   describe 'DELETE /shops/:id' do
-    before { delete "/shops/#{shop_id}/items/#{id}" }
+    before { delete "/shops/#{shop_id}/items/#{id}", params: {}, headers: headers }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)

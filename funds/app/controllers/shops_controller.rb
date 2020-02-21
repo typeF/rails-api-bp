@@ -3,13 +3,13 @@ class ShopsController < ApplicationController
 
   # GET /shops
   def index
-    @shops = Shop.all
+    @shops = current_user.shops
     json_response(@shops)
   end
 
   # POST /shops
   def create
-    @shop = Shop.create!(shop_params)
+    @shop = current_user.shops.create!(shop_params)
     json_response(@shop, :created)
   end
 
@@ -34,7 +34,7 @@ class ShopsController < ApplicationController
 
   def shop_params
     # whitelist params
-    params.permit(:title, :location, :created_by)
+    params.permit(:title, :location)
   end
 
   def set_shop
